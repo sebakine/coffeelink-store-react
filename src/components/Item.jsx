@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
-import { formatPrice } from '../data/mockProducts'
+import { formatPrice } from '../utils/format'
 
 // Componente de presentación: recibe un producto por props y muestra su tarjeta.
 // El acceso al detalle se hace con <Link> de React Router (sin recargar la página).
 function Item({ product }) {
+  const noStock = product.stock === 0
+
   return (
     <article
       className="group flex flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white
@@ -17,6 +19,12 @@ function Item({ product }) {
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
         />
+        {/* Renderizado condicional: aviso de producto sin stock. */}
+        {noStock && (
+          <span className="absolute left-3 top-3 rounded-full bg-stone-900/80 px-3 py-1 text-xs font-semibold text-stone-50 backdrop-blur-sm">
+            Sin stock
+          </span>
+        )}
       </Link>
 
       <div className="flex flex-1 flex-col p-5">

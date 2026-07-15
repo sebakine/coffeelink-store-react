@@ -3,6 +3,7 @@ import NavBar from './components/NavBar'
 import Home from './components/Home'
 import ItemListContainer from './components/ItemListContainer'
 import ItemDetailContainer from './components/ItemDetailContainer'
+import Cart from './components/Cart'
 import Checkout from './components/Checkout'
 import NotFound from './components/NotFound'
 import CartDrawer from './components/CartDrawer'
@@ -20,6 +21,8 @@ function App() {
           <Route path="/category/:id" element={<ItemListContainer />} />
           {/* '/item/:id' : detalle de un producto */}
           <Route path="/item/:id" element={<ItemDetailContainer />} />
+          {/* '/cart' : contenido del carrito de compras */}
+          <Route path="/cart" element={<Cart />} />
           {/* '/checkout' : finalizar compra */}
           <Route path="/checkout" element={<Checkout />} />
           {/* '*' : 404 de respaldo para enlaces rotos o inexistentes */}

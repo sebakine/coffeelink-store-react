@@ -1,15 +1,17 @@
+import { Link } from 'react-router-dom'
 import { ShoppingBag } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 
+// Ícono del carrito en la NavBar: navega a /cart con React Router
+// y muestra el total de unidades leído desde el contexto.
 function CartWidget() {
-  const { totalProducts, openDrawer } = useCart()
+  const { totalProducts } = useCart()
   const count = totalProducts()
 
   return (
-    <button
-      type="button"
-      onClick={openDrawer}
-      aria-label={`Abrir carrito, ${count} productos`}
+    <Link
+      to="/cart"
+      aria-label={`Ir al carrito, ${count} productos`}
       className="group relative grid h-11 w-11 place-items-center rounded-full
                  text-stone-800 transition-all duration-300 ease-in-out
                  hover:bg-stone-100 hover:text-amber-800
@@ -29,7 +31,7 @@ function CartWidget() {
           {count}
         </span>
       )}
-    </button>
+    </Link>
   )
 }
 

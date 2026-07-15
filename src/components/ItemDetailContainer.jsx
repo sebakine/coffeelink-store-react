@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
-import { getProductById } from '../data/mockProducts'
+import { getProductById } from '../services/products'
 import ItemDetail from './ItemDetail'
 import NotFound from './NotFound'
 
@@ -11,12 +11,15 @@ function ItemDetailContainer() {
   const { id } = useParams()
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     setLoading(true)
-    // Promesa que devuelve únicamente el producto que coincide con el id (o null).
+    setError(false)
+    // Consulta a Firestore que devuelve el producto por id de documento (o null).
     getProductById(id)
       .then((data) => setProduct(data))
+      .catch(() => setError(true))
       .finally(() => setLoading(false))
     // id en las dependencias para recargar al cambiar de producto.
   }, [id])
@@ -27,6 +30,14 @@ function ItemDetailContainer() {
         <Loader2 className="h-7 w-7 animate-spin text-amber-800" />
         <p className="text-sm">Cargando producto…</p>
       </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <p className="mx-auto max-w-6xl px-5 py-32 text-center text-stone-500">
+        No pudimos cargar el producto. Intentá de nuevo en unos minutos.
+      </p>
     )
   }
 

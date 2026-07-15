@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Check } from 'lucide-react'
 import { useCart } from '../context/CartContext'
-import { formatPrice, CATEGORIES } from '../data/mockProducts'
+import { CATEGORIES } from '../data/categories'
+import { formatPrice } from '../utils/format'
 import ItemCount from './ItemCount'
 
 // Componente de presentación: muestra la vista detallada del producto recibido por props

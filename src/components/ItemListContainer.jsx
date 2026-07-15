@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
-import { CATEGORIES, getProducts, categoryExists } from '../data/mockProducts'
+import { CATEGORIES, categoryExists } from '../data/categories'
+import { getProducts } from '../services/products'
 import ItemList from './ItemList'
 import NotFound from './NotFound'
 
@@ -11,12 +12,15 @@ function ItemListContainer({ greeting = 'Descubrí el café de especialidad' }) 
   const { id: categoryId } = useParams()
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     setLoading(true)
-    // Consume la Promesa asíncrona; si hay categoryId filtra, si no trae todo.
+    setError(false)
+    // Consulta asíncrona a Firestore; si hay categoryId filtra, si no trae todo.
     getProducts(categoryId)
       .then((data) => setProducts(data))
+      .catch(() => setError(true))
       .finally(() => setLoading(false))
     // categoryId va en las dependencias para re-ejecutar al navegar entre categorías.
   }, [categoryId])
@@ -67,6 +71,10 @@ function ItemListContainer({ greeting = 'Descubrí el café de especialidad' }) 
           <Loader2 className="h-7 w-7 animate-spin text-amber-800" />
           <p className="text-sm">Cargando productos…</p>
         </div>
+      ) : error ? (
+        <p className="mt-20 text-center text-stone-500">
+          No pudimos cargar los productos. Intentá de nuevo en unos minutos.
+        </p>
       ) : (
         <ItemList products={products} />
       )}

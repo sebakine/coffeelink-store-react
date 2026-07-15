@@ -1,14 +1,27 @@
+import { initializeApp } from 'firebase/app'
+import { doc, getFirestore, setDoc } from 'firebase/firestore'
+
+// Carga única del catálogo a la colección 'products' de Firestore.
+// Uso: npm run seed  (lee las credenciales desde el archivo .env)
+
+const firebaseConfig = {
+  apiKey: process.env.VITE_FIREBASE_API_KEY,
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VITE_FIREBASE_APP_ID,
+}
+
+if (!firebaseConfig.projectId) {
+  console.error('Faltan las credenciales: completá el archivo .env antes de correr el seed.')
+  process.exit(1)
+}
+
 const img = (id) =>
   `https://images.unsplash.com/photo-${id}?w=800&q=80&auto=format&fit=crop`
 
-export const CATEGORIES = [
-  { id: 'all', label: 'Todos' },
-  { id: 'granos', label: 'Granos' },
-  { id: 'cafeteras', label: 'Cafeteras' },
-  { id: 'accesorios', label: 'Accesorios' },
-]
-
-export const products = [
+const products = [
   {
     id: 'g1',
     title: 'Etiopía Yirgacheffe',
@@ -44,6 +57,15 @@ export const products = [
     stock: 12,
     category: 'granos',
     pictureUrl: img('1447933601403-0c6688de566e'),
+  },
+  {
+    id: 'g5',
+    title: 'Kenia AA',
+    description: 'Acidez vibrante a grosella negra y pomelo. Lote de subasta, edición limitada.',
+    price: 12800,
+    stock: 0,
+    category: 'granos',
+    pictureUrl: img('1524350876685-274059332603'),
   },
   {
     id: 'c1',
@@ -119,37 +141,14 @@ export const products = [
   },
 ]
 
-// --- Capa de acceso a datos (mock asíncrono) ---
-// Simulan llamadas a una API real devolviendo Promesas resueltas con setTimeout.
-const FAKE_DELAY = 600
+const app = initializeApp(firebaseConfig)
+const db = getFirestore(app)
 
-// Devuelve todos los productos o, si se pasa categoryId, solo los de esa categoría.
-export const getProducts = (categoryId) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      const list = categoryId
-        ? products.filter((product) => product.category === categoryId)
-        : products
-      resolve(list)
-    }, FAKE_DELAY)
-  })
+// setDoc con id propio (g1, c1, a1…) mantiene URLs estables como /item/g1.
+for (const { id, ...data } of products) {
+  await setDoc(doc(db, 'products', id), data)
+  console.log(`✔ ${id} — ${data.title}`)
+}
 
-// Busca y devuelve únicamente el producto que coincide con el id; null si no existe.
-export const getProductById = (id) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      const found = products.find((product) => product.id === id)
-      resolve(found ?? null)
-    }, FAKE_DELAY)
-  })
-
-// Valida que la categoría exista (útil para mostrar la 404 en rutas inventadas).
-export const categoryExists = (categoryId) =>
-  CATEGORIES.some((category) => category.id === categoryId && category.id !== 'all')
-
-export const formatPrice = (value) =>
-  value.toLocaleString('es-AR', {
-    style: 'currency',
-    currency: 'ARS',
-    maximumFractionDigits: 0,
-  })
+console.log(`\nListo: ${products.length} productos cargados en Firestore.`)
+process.exit(0)

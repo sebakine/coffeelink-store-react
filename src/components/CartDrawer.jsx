@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ShoppingBag, Trash2, X } from 'lucide-react'
 import { useCart } from '../context/CartContext'
-import { formatPrice } from '../data/mockProducts'
+import { formatPrice } from '../utils/format'
 
 function CartDrawer() {
   const { items, removeItem, clearCart, totalPrice, isDrawerOpen, closeDrawer } = useCart()
@@ -128,6 +128,16 @@ function CartDrawer() {
             >
               Proceder al Pago
             </button>
+
+            <Link
+              to="/cart"
+              onClick={closeDrawer}
+              className="mt-3 block w-full rounded-full border border-stone-300 px-6 py-3 text-center
+                         text-sm font-semibold text-stone-700 transition-colors duration-300 ease-in-out
+                         hover:border-amber-800 hover:text-amber-800"
+            >
+              Ver carrito completo
+            </Link>
 
             <button
               type="button"
