@@ -1,3 +1,8 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/banner-dark.svg">
+  <img alt="Banner del proyecto" src=".github/banner-light.svg" width="100%">
+</picture>
+
 # CoffeeLink ☕
 
 E-commerce de café de especialidad: tostaduría premium, cafeteras y accesorios de preparación.
